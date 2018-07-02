@@ -1,0 +1,31 @@
+{
+  "name": "typpit",
+  "version": "0.1.0",
+  "description": "Typpit",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "electron": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Typpit/typpit-editor.git"
+  },
+  "author": "Eugene Min",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/Typpit/typpit-editor/issues"
+  },
+  "homepage": "https://github.com/Typpit/typpit-editor#readme",
+  "devDependencies": {
+    "electron": "^2.0.3",
+    "react-scripts": "^1.1.4"
+  },
+  "dependencies": {
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1"
+  }
+}
