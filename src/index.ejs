@@ -9,14 +9,9 @@
         require('module').globalPaths.push('<%= htmlWebpackPlugin.options.nodeModules.replace(/\\/g, '\\\\') %>')
       </script>
     <% } %>
-    <script>
-      var nodeRequire = global.require;
-    </script>
-    <script src="../../node_modules/monaco-editor/dev/vs/loader.js"></script>
-    <script>
-      var amdRequire = global.require;
-      global.require = nodeRequire;
-    </script>
+    <script src="../../node_modules/codemirror/lib/codemirror.js"></script>
+    <link rel="stylesheet" href="../../node_modules/codemirror/lib/codemirror.css">
+    <script src="../../node_modules/codemirror/mode/markdown/markdown.js"></script>
   </head>
   <body>
     <div id="app"></div>

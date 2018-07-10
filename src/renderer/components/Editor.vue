@@ -1,11 +1,9 @@
 <template>
-	<div id="container" style="height:500px;border:1px solid #ccc"></div>
+	<div id="container"></div>
 </template>
 
 <script>
-  /* global amdRequire */
-  var app = require('electron').remote.app
-  var path = require('path')
+  /* global CodeMirror */
   var Y = require('yjs')
   require('y-websockets-client')(Y)
   require('y-memory')(Y)
@@ -13,52 +11,33 @@
   require('y-text')(Y)
 
   function loadMonacoEditor () {
-    function uriFromPath (_path) {
-      var pathName = path.resolve(_path).replace(/\\/g, '/')
-      if (pathName.length > 0 && pathName.charAt(0) !== '/') {
-        pathName = '/' + pathName
-      }
-      return encodeURI('file://' + pathName)
-    }
-
-    amdRequire.config({
-      baseUrl: uriFromPath(path.join(app.getAppPath(), './node_modules/monaco-editor/dev'))
+    var editor = CodeMirror(document.getElementById('container'), {
+      mode: 'markdown',
+      lineNumbers: true,
+      theme: 'default'
     })
 
-    // workaround monaco-css not understanding the environment
-    self.module = undefined
+    Y({
+      db: {
+        name: 'memory' // use memory database adapter.
+        // name: 'indexeddb' // use indexeddb database adapter instead for offline apps
+      },
+      connector: {
+        name: 'websockets-client',
+        room: 'my-room', // clients connecting to the same room share data
+        url: 'http://localhost:1234'
+      },
+      sourceDir: null,
+      share: {
+        CodeMirror: 'Text' // y.share.textarea is of type y-text
+      }
+    }).then(function (y) {
+      window.yCodeMirror = y
+      // The Yjs instance `y` is available
+      // y.share.* contains the shared types
 
-    // workaround monaco-typescript not understanding the environment
-    self.process.browser = true
-
-    amdRequire(['vs/editor/editor.main'], function () {
-      var that = this
-      Y({
-        db: {
-          name: 'memory' // use memory database adapter.
-          // name: 'indexeddb' // use indexeddb database adapter instead for offline apps
-        },
-        connector: {
-          name: 'websockets-client',
-          room: 'my-room', // clients connecting to the same room share data
-          url: 'http://localhost:1234'
-        },
-        sourceDir: null,
-        share: {
-          monaco: 'Text' // y.share.textarea is of type y-text
-        }
-      }).then(function (y) {
-        window.yMonaco = y
-        // The Yjs instance `y` is available
-        // y.share.* contains the shared types
-
-        var editor = that.monaco.editor.create(document.getElementById('container'), {
-          language: 'javascript'
-        })
-
-        // Bind `y.share.monaco`
-        y.share.monaco.bindMonaco(editor)
-      })
+      // Bind `y.share.monaco`
+      y.share.CodeMirror.bindCodeMirror(editor)
     })
   }
   export default {
